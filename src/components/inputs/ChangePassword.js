@@ -24,8 +24,6 @@ const ChangePassword = (props) => {
             setInterval(() => {
                 setQuery('success');
             }, 3000);
-
-
         }
         console.log({ oldPasswod, newPassword, repeatPassword });
     }
@@ -39,7 +37,7 @@ const ChangePassword = (props) => {
                 </Typography>
                 <form onSubmit={handleSubmit} validate="true">
                     <Grid container style={{ marginTop: 20 }} spacing={2} >
-                        <Grid item xs={12} className={classes.item}>
+                        <Grid item xs={12} sm={6} className={classes.item}>
                             <TextField
                                 label="Antigua Contraseña"
                                 margin="normal"

@@ -5,7 +5,8 @@ import {
 } from '@material-ui/core';
 
 import {
-    AccountCircle as AccountCircleIcon, BarChart as BarChartIcon
+    AccountCircle as AccountCircleIcon, Home as HomeIcon,
+    Ballot as BallotIcon
 } from '@material-ui/icons';
 
 import { Link } from "react-router-dom";
@@ -31,7 +32,26 @@ const AddLabel = (props) => {
 }
 
 const MainListItems = (props) => {
-    const { open } = props;
+    const { open, role } = props;
+
+    const listAdmin = (role !== 'ADM') ? null : (
+        <>
+            <AddLabel open={open} title="Gestionar usuarios" to="usuarios">
+                <ListItem button>
+                    <ListItemIcon>
+                        <BallotIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Gestionar usuarios" />
+                </ListItem>
+            </AddLabel>
+        </>
+    );
+
+    const listQA = (role !== 'QAS') ? null : (
+        <>
+        </>
+    );
+
     return (
         <div>
             <AddLabel open={open} title="Mi Cuenta" to="cuenta">
@@ -42,14 +62,17 @@ const MainListItems = (props) => {
                     <ListItemText primary="Mi cuenta" />
                 </ListItem>
             </AddLabel>
-            {/* <AddLabel open={open} title="Rendimiento">
+
+            <AddLabel open={open} title="Página principal" to="/">
                 <ListItem button>
                     <ListItemIcon>
-                        <BarChartIcon />
+                        <HomeIcon />
                     </ListItemIcon>
-                    <ListItemText primary="Rendimiento" />
+                    <ListItemText primary="Página principal" />
                 </ListItem>
-            </AddLabel> */}
+            </AddLabel>
+            {listAdmin}
+            {listQA}
         </div>
     );
 }

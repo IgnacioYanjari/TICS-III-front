@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
-  Avatar, Button, CssBaseline, TextField, Link, Grid, Box,
+  Avatar, Button, CssBaseline, TextField, Box,
   Typography, Container
 } from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
@@ -16,27 +16,37 @@ function LoginPage() {
   const classes = LoginStyle();
   const { value: rut, bind: bindRut } = TextInput('rut', '');
   const { value: password, bind: bindPassword } = TextInput('text', '');
-  const [redirect, setRedirect] = useState(false);
+  const [redirect, setRedirect] = useState('');
   const [query, setQuery] = useState('');
   const authService = new AuthService();
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
     setQuery('sending');
-    authService.login(rut, password)
+
+    await authService.login(rut, password)
       .then(res => {
-        console.log(res);
         setQuery('success');
+        if (authService.isAdmin()) {
+          setRedirect('/admin');
+        } else {
+          setRedirect('/calidad');
+        }
       })
       .catch(err => {
         alert(err);
       });
-
   }
+
+  useEffect(() => {
+    if (authService.loggedIn()) {
+      authService.isAdmin() ? setRedirect('/admin') : setRedirect('/calidad');
+    }
+  }, [authService]);
 
   return (
     <div>
-      {(redirect) ? <Redirect to="/admin" /> : null}
+      {(redirect !== '') ? <Redirect to={redirect} /> : null}
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <div className={classes.paper}>
@@ -78,13 +88,6 @@ function LoginPage() {
             >
               Ingresar
             </Button>
-            <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  Recordar contraseña
-                </Link>
-              </Grid>
-            </Grid>
           </form>
         </div>
         <Box mt={8}>

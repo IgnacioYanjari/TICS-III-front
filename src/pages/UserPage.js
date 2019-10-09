@@ -9,9 +9,12 @@ import {
 import { Template } from 'components';
 import UserStyle from 'styles/User';
 import ChangePassword from 'components/inputs/ChangePassword';
+import AuthService from 'services/AuthService';
 
 const UserPage = (props) => {
     const classes = UserStyle();
+    const authService = new AuthService();
+    const { username: rut, nombre, apellido } = authService.getProfile();
 
     const handleImage = (e) => {
         console.log(e.target.files[0]);
@@ -56,7 +59,7 @@ const UserPage = (props) => {
                                     <Grid item xs={12} className={classes.item}>
                                         <TextField
                                             label="Nombre"
-                                            defaultValue="Juan"
+                                            defaultValue={nombre}
                                             margin="normal"
                                             InputProps={{
                                                 readOnly: true,
@@ -67,7 +70,7 @@ const UserPage = (props) => {
                                     <Grid item xs={12} className={classes.item}>
                                         <TextField
                                             label="Apellido"
-                                            defaultValue="Perez"
+                                            defaultValue={apellido}
                                             margin="normal"
                                             InputProps={{
                                                 readOnly: true,
@@ -78,7 +81,7 @@ const UserPage = (props) => {
                                     <Grid item xs={12} className={classes.item}>
                                         <TextField
                                             label="RUT"
-                                            defaultValue="11.166.605-9"
+                                            defaultValue={rut}
                                             margin="normal"
                                             InputProps={{
                                                 readOnly: true,

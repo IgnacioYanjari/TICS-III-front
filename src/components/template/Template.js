@@ -12,10 +12,13 @@ import { Redirect, Link } from "react-router-dom";
 import { MainListItems } from './ListItems';
 import { Copyright } from 'components';
 import TemplateStyle from 'styles/Template';
+import AuthService from 'services/AuthService';
 
-const ToHome = (props) => {
+const authService = new AuthService();
+
+const ToHome = () => {
     let link = "";
-    (props.userType === 'admin') ? link = "admin" : link = "calidad"
+    (authService.isAdmin()) ? link = "admin" : link = "calidad"
     return (
         <Link to={link} style={{ color: "#FFF", textDecoration: 'none' }}>
             TrazApp
@@ -28,6 +31,7 @@ export default function Template(props) {
     const classes = TemplateStyle();
     const [open, setOpen] = React.useState(false);
     const [logout, setLogout] = React.useState(false);
+    const { nombre, apellido, rol } = authService.getProfile();
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -39,6 +43,7 @@ export default function Template(props) {
 
     const handleLogout = () => {
         setLogout(true);
+        authService.logout();
     }
 
     return (
@@ -58,10 +63,10 @@ export default function Template(props) {
                             <MenuIcon />
                         </IconButton>
                         <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-                            <ToHome userType={props.userType} />
+                            <ToHome />
                         </Typography>
                         <Typography component="h1" variant="h6" color="inherit" >
-                            {props.userName}
+                            {nombre} {apellido}
                             <Tooltip title="Salir">
                                 <IconButton color="inherit" style={{ marginLeft: 20 }} onClick={handleLogout} >
                                     <ExitToAppIcon />
@@ -88,7 +93,7 @@ export default function Template(props) {
                     </div>
                     <Divider />
                     <List>
-                        <MainListItems open={open} />
+                        <MainListItems open={open} role={rol} />
                     </List>
                 </Drawer>
                 <main className={classes.content}>

@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Grid, Paper } from '@material-ui/core';
 import loginStyle from 'styles/Login.js';
-import { Template, Table } from 'components';
+import { Template, OpTable } from 'components';
 
 export default function LoginPage() {
     const classes = loginStyle();
@@ -35,13 +35,19 @@ export default function LoginPage() {
         ],
     });
 
+    useEffect(() => {
+        // Hacer el fetch
+        // Si tiene [] como segundo parámetro implica que solo se llama al montarse
+        // pero no cuando se updatea.
+    }, []);
+
     return (
-        <Template userName="Juan Pablo Valdes" userType="quality">
+        <Template >
             <Grid container spacing={1}>
                 {/* Lista de Activos*/}
                 <Grid className={classes.paper} item xs={12} md={12} xl={12} lg={12}>
                     <Paper style={{ width: '100%' }}>
-                        <Table
+                        <OpTable
                             title="Ordenes asignadas"
                             columns={state.columns}
                             data={state.data}
@@ -57,7 +63,7 @@ export default function LoginPage() {
                 {/* Lista de Inactivos */}
                 <Grid className={classes.paper} item xs={12} md={12} xl={12} lg={12}>
                     <Paper style={{ width: '100%' }}>
-                        <Table
+                        <OpTable
                             title="Ordenes inactivas"
                             columns={state.columns}
                             data={state.data}

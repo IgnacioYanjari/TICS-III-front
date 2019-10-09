@@ -15,48 +15,43 @@ class AuthService extends MainService {
       `${this.domain}/token`,
       {
         method: "POST",
-        body: {
+        body: JSON.stringify({
           username,
           password
-        }
+        })
       }
     ).then(res => {
-      console.log('res', res);
-      if (res.status === "success") {
+      if (res.access)
         this.setToken(res.access); // Setting the token in localStorage
-        return Promise.resolve(res);
-      }
+      return Promise.resolve(res);
     });
   }
 
   logout() {
     // Clear user token and profile data from localStorage
-    localStorage.removeItem("id_token");
+    localStorage.removeItem("token");
   }
 
   isAdmin() {
     if (!this.loggedIn()) return false;
-    if (!this.getProfile().roles) {
+    if (!this.getProfile().rol) {
       this.logout();
     }
-    let isAdmin = this.getProfile().roles.find(val => val === 1);
-    if (isAdmin) return true;
-    return false;
+    return this.getProfile().rol === 'ADM' ? true : false;
   }
 
-  isSupervisor() {
+  isQA() {
     if (!this.loggedIn()) return false;
-    if (!this.getProfile().roles) {
+    if (!this.getProfile().rol) {
       this.logout();
     }
-    let isAdmin = this.getProfile().roles.find(val => val === 2);
-    if (isAdmin) return true;
-    return false;
+    return this.getProfile().rol === 'QAS' ? true : false;
   }
 
   getProfile() {
     // Using jwt-decode npm package to decode the token
-    return decode(this.getToken());
+    let token = this.getToken();
+    return (token) ? decode(token) : {};
   }
 }
 

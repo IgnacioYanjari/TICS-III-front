@@ -1,14 +1,17 @@
 import { TextInput, ChangePassword } from './inputs';
+import { OpTable, UsersTable } from './tables';
+import { CreateUser } from './modals';
 import Copyright from './Copyright';
 import Template from './template/Template';
-import Table from './Table'
 import Loading from './Loading';
 
 export {
   TextInput,
   Copyright,
   Template,
-  Table,
+  OpTable,
+  UsersTable,
   ChangePassword,
-  Loading
+  Loading,
+  CreateUser
 }

@@ -30,11 +30,6 @@ const UserStyle = makeStyles(theme => ({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'left'
-    },
-    load: {
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
     }
 
 }));

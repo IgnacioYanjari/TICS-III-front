@@ -2,7 +2,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const loginStyle = makeStyles(theme => ({
   paper: {
-    marginTop: theme.spacing(8),
+    marginTop: theme.spacing(6),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -23,6 +23,9 @@ const loginStyle = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+  },
+  add: {
+    margin: theme.spacing(1),
   }
 
 }));

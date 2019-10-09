@@ -4,13 +4,19 @@ class MainService {
   // Initializing important variables
   constructor(domain) {
     this.domain = domain || "http://trazappapi2.herokuapp.com/api"; // API server domain
+    // this.domain = domain || "http://localhost:8000/api"; // API server domain
     this.fetch = this.fetch.bind(this);
   }
 
   loggedIn() {
     // Checks if there is a saved token and it's still valid
     const token = this.getToken(); // GEtting token from localstorage
-    return !!token && !this.isTokenExpired(token); // handwaiving here
+    if (token) {
+      return !!token && !this.isTokenExpired(token); // handwaiving here
+    }
+    return false;
+
+
   }
 
   setToken(token) {
@@ -38,9 +44,7 @@ class MainService {
   fetch(url, options) {
     // performs api calls sending the required authentication headers
     const headers = {
-      "Accept": "application/json",
-      "Content-Type": "application/json",
-      "Connection": "keep-alive"
+      "Content-Type": "application/json"
     };
 
     // Setting Authorization header
@@ -48,7 +52,7 @@ class MainService {
     if (this.loggedIn()) {
       headers["Authorization"] = "Bearer " + this.getToken();
     }
-    console.log({ url, headers, ...options });
+
     return fetch(url, {
       headers,
       ...options
@@ -63,9 +67,8 @@ class MainService {
       });
   }
 
-  _checkStatus = async (
-    response,
-  ) => {
+  _checkStatus = async (response, ) => {
+    // console.log(response.json());
     // raises an error in case response status is not a success
     if (response.status >= 200 && response.status < 300) {
       // Success status lies between 200 to 300
