@@ -29,13 +29,12 @@ export default function CreateUser(props) {
         e.preventDefault();
         setMessage('');
         setQuery('sending');
-        setInterval(() => {
+        setTimeout(() => {
             setQuery('success');
-            setInterval(() => {
+            setTimeout(() => {
                 props.closeModal({ name, surname, email, rut, role });
             }, 3000);
         }, 3000);
-        console.log({ name, surname, email, rut, password, role })
     };
 
     useEffect(() => {
@@ -47,7 +46,7 @@ export default function CreateUser(props) {
         setRole('QAS');
         setMessage('')
         setQuery('');
-    }, [props.closeModal])
+    }, [])
 
     const changeRole = (event) => {
         setRole(event.target.value);
@@ -56,8 +55,7 @@ export default function CreateUser(props) {
     return (
         <div>
             <Dialog
-                open={props.open} onClose={props.closeModal}
-                aria-labelledby="form-dialog-title"
+                open={props.open} aria-labelledby="form-dialog-title"
             >
                 <DialogTitle >Crear Usuario</DialogTitle>
                 <DialogContent>
@@ -129,11 +127,11 @@ export default function CreateUser(props) {
                             )}
                         <DialogActions>
                             <Button onClick={props.closeModal} color="primary">
-                                Cancel
+                                Cancelar
                         </Button>
                             <Button type="submit" color="primary">
                                 Crear
-                        </Button>
+                            </Button>
                         </DialogActions>
                     </form>
 

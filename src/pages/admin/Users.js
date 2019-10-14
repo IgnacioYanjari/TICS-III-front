@@ -71,13 +71,14 @@ export default function EditUsersPage() {
     }
 
     const closeModal = (newUser) => {
+        setOpenModel(false);
         if ('role' in newUser) {
             const data = [...state.data];
             newUser.role = (newUser.role === 'QAS') ? 0 : 1;
             data.push(newUser);
             setState({ ...state, data });
         }
-        setOpenModel(false);
+
     };
 
     return (

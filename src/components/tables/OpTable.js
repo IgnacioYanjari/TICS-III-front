@@ -4,11 +4,11 @@ import MaterialTable from 'material-table';
 export default function OpTable(props) {
 
     let actions = [];
-    if (props.assignOnClick) {
+    if (props.viewOnClick) {
         actions.push({
             icon: 'add_circle',
-            tooltip: 'Inscribir',
-            onClick: props.assignOnClick
+            tooltip: 'Ver',
+            onClick: props.viewOnClick
         });
     }
     if (props.deleteOnClick) {
@@ -21,7 +21,7 @@ export default function OpTable(props) {
     if (props.detailOnClick) {
         actions.push({
             icon: 'assignment',
-            tooltip: 'Ver Detalle',
+            tooltip: 'Realizar etapa',
             onClick: props.detailOnClick
         });
     }
@@ -32,7 +32,7 @@ export default function OpTable(props) {
             columns={props.columns}
             data={props.data}
             options={{
-                pageSize: 5,
+                pageSize: 6,
                 pageSizeOptions: [],
                 sorting: false
             }}

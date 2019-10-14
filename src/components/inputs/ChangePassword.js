@@ -58,13 +58,14 @@ const ChangePassword = (props) => {
                                 {...bindNewPassword}
                             />
                         </Grid>
-                        <Grid item xs={12} sm={6} className={classes.item}>
+                        <Grid item xs={12} sm={12} className={classes.item}>
                             <TextField
                                 label="Repetir Contraseña"
                                 margin="normal"
                                 variant="filled"
                                 type="password"
                                 required
+                                fullWidth
                                 {...bindrepeatPassword}
                             />
                         </Grid>

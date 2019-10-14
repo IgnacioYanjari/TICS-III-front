@@ -18,6 +18,7 @@ function LoginPage() {
   const { value: password, bind: bindPassword } = TextInput('text', '');
   const [redirect, setRedirect] = useState('');
   const [query, setQuery] = useState('');
+  const [message, setMessage] = useState('');
   const authService = new AuthService();
 
   const handleFormSubmit = async (e) => {
@@ -27,11 +28,18 @@ function LoginPage() {
     await authService.login(rut, password)
       .then(res => {
         setQuery('success');
+        if (res.status === 'fail') {
+          setMessage('Credenciales invalidas');
+          return;
+        }
+        setMessage('Ingreso Correcto');
+
         if (authService.isAdmin()) {
           setRedirect('/admin');
         } else {
           setRedirect('/calidad');
         }
+
       })
       .catch(err => {
         alert(err);
@@ -94,7 +102,7 @@ function LoginPage() {
           <Copyright />
         </Box>
         <Box className={classes.load} mt={3}>
-          <Loading state={query} message="Ingreso Correcto"></Loading>
+          <Loading state={query} message={message}></Loading>
         </Box>
       </Container>
     </div>
