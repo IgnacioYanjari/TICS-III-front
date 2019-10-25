@@ -9,34 +9,43 @@ import {
 import { Template, TextInput, Loading } from 'components';
 import UserStyle from 'styles/User';
 import ChangePassword from 'components/inputs/ChangePassword';
-import AuthService from 'services/AuthService';
+import { AuthService, UserService } from 'services';
 
 const UserPage = (props) => {
     const classes = UserStyle();
     const authService = new AuthService();
-    const { username: rut, nombre, apellido } = authService.getProfile();
-    const { value: email, bind: bindEmail, setValue: setEmail } = TextInput('email', '');
+    const userService = new UserService();
+    let { username: rut, name, surname, email: emailReal } = authService.getProfile();
+    const { value: email, bind: bindEmail, setValue: setEmail } = TextInput('email', emailReal);
     const [message, setMessage] = useState('');
     const [query, setQuery] = useState('');
 
-    const handleImage = (e) => {
-        console.log(e.target.files[0]);
-    }
+    // const handleImage = (e) => {
+    //     console.log(e.target.files[0]);
+    // }
 
-    const handleFormSubmit = (e) => {
+    const handleFormSubmit = async (e) => {
         e.preventDefault();
-        setMessage('');
+        if (emailReal === email) {
+            setMessage('Para cambiar email debe ser distinto al antiguo');
+            return;
+        }
         setQuery('sending');
-        setInterval(() => {
+        const user = await userService.getProfile();
+        try {
+            await userService.updateEmail(email, user.user_id);
             setQuery('success');
             setEmail('');
-        }, 3000);
-        console.log(email);
+            setMessage('');
+            setEmail(authService.getProfile().email);
+        } catch (e) {
+            console.log(e);
+        }
     }
     // Revisar si tener email en el token o en una api
 
     return (
-        <Template userName="Juan Perez" userType="quality">
+        <Template >
             <Grid container spacing={1} direction="row" justify="center" alignItems="center" >
                 <Grid item md={6}>
                     <Container component="main" maxWidth="sm">
@@ -54,7 +63,7 @@ const UserPage = (props) => {
                                             alt="User Image"
                                         />
                                     </Grid>
-                                    <Grid item xs={12} className={classes.item}>
+                                    {/* <Grid item xs={12} className={classes.item}>
                                         <Button variant="contained" color="default"
                                             component="label" className={classes.button}
                                         >
@@ -68,14 +77,13 @@ const UserPage = (props) => {
                                             />
                                             <CloudUploadIcon className={classes.rightIcon} />
                                         </Button>
-
-                                    </Grid>
+                                    </Grid> */}
                                 </Grid>
                                 <Grid item md={6} xs={12} sm={6}>
                                     <Grid item xs={12} className={classes.item}>
                                         <TextField
                                             label="Nombre"
-                                            defaultValue={nombre}
+                                            defaultValue={name}
                                             margin="normal"
                                             InputProps={{
                                                 readOnly: true,
@@ -86,7 +94,7 @@ const UserPage = (props) => {
                                     <Grid item xs={12} className={classes.item}>
                                         <TextField
                                             label="Apellido"
-                                            defaultValue={apellido}
+                                            defaultValue={surname}
                                             margin="normal"
                                             InputProps={{
                                                 readOnly: true,
@@ -107,12 +115,12 @@ const UserPage = (props) => {
                                     </Grid>
                                 </Grid>
                             </Grid>
-                            <Typography component="h1" variant="h5" className={classes.title}>
+                            <Typography component="h1" variant="h5">
                                 Editar
-                                <Divider />
+                            <Divider />
                             </Typography>
                             <form style={{ width: '100%' }} onSubmit={e => handleFormSubmit(e)} validate="true" >
-                                <Grid container style={{ marginTop: 5 }} spacing={2} >
+                                <Grid container spacing={2} >
                                     <Grid item xs={12}>
                                         <Grid item xs={12} className={classes.item}>
                                             <TextField

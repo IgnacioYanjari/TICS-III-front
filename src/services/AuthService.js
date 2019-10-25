@@ -1,4 +1,3 @@
-import decode from "jwt-decode";
 import MainService from "services/MainService";
 
 class AuthService extends MainService {
@@ -12,7 +11,7 @@ class AuthService extends MainService {
   login(username, password) {
     // Get a token from api server using the fetch api
     return this.fetch(
-      `${this.domain}/token`,
+      `${this.domain}/api/token`,
       {
         method: "POST",
         body: JSON.stringify({
@@ -23,6 +22,7 @@ class AuthService extends MainService {
     ).then(res => {
       if (res.access)
         this.setToken(res.access); // Setting the token in localStorage
+      console.log(this.getProfile());
       return Promise.resolve(res);
     });
   }
@@ -34,25 +34,20 @@ class AuthService extends MainService {
 
   isAdmin() {
     if (!this.loggedIn()) return false;
-    if (!this.getProfile().rol) {
+    if (!this.getProfile().role) {
       this.logout();
     }
-    return this.getProfile().rol === 'ADM' ? true : false;
+    return this.getProfile().role === 'ADM' ? true : false;
   }
 
   isQA() {
     if (!this.loggedIn()) return false;
-    if (!this.getProfile().rol) {
+    if (!this.getProfile().role) {
       this.logout();
     }
-    return this.getProfile().rol === 'QAS' ? true : false;
+    return this.getProfile().role === 'QAS' ? true : false;
   }
 
-  getProfile() {
-    // Using jwt-decode npm package to decode the token
-    let token = this.getToken();
-    return (token) ? decode(token) : {};
-  }
 }
 
 export default AuthService;

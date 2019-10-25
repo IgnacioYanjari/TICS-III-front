@@ -5,27 +5,40 @@ import {
 } from '@material-ui/core';
 import UserStyle from 'styles/User';
 import { TextInput, Loading } from 'components';
+import { UserService } from 'services';
 
 const ChangePassword = (props) => {
     const classes = UserStyle();
-    const { value: oldPasswod, bind: bindOldPassword } = TextInput('oldPasswod', '');
+    const { value: oldPassword, bind: bindOldPassword } = TextInput('oldPassword', '');
     const { value: newPassword, bind: bindNewPassword } = TextInput('newPassword', '');
     const { value: repeatPassword, bind: bindrepeatPassword } = TextInput('repeatPassword', '');
     const [message, setmessage] = useState('');
-    const [query, setQuery] = useState('')
+    const [query, setQuery] = useState('');
+    const userService = new UserService();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
+
         e.preventDefault();
         if (newPassword !== repeatPassword) {
             setmessage('Contraseña nueva debe coincidir');
         } else {
             setmessage('');
             setQuery('sending');
-            setInterval(() => {
+            const profile = await userService.getProfile();
+            let response = await userService.updatePassword({
+                new_password: newPassword,
+                repeat_password: repeatPassword,
+                password: oldPassword
+            }, profile.user_id);
+            if (response.status === 'fail') {
+                setmessage(response.password);
                 setQuery('success');
-            }, 3000);
+                return;
+            }
+            setmessage('Contraseña cambiada con éxito');
+            setQuery('success');
+            console.log(response);
         }
-        console.log({ oldPasswod, newPassword, repeatPassword });
     }
 
     return (
@@ -37,14 +50,14 @@ const ChangePassword = (props) => {
                 </Typography>
                 <form onSubmit={handleSubmit} validate="true">
                     <Grid container style={{ marginTop: 20 }} spacing={2} >
-                        <Grid item xs={12} sm={6} className={classes.item}>
+                        <Grid item xs={12} sm={12} className={classes.item}>
                             <TextField
                                 label="Antigua Contraseña"
                                 margin="normal"
                                 variant="filled"
-                                style={{ width: '90%' }}
                                 type="password"
                                 required
+                                fullWidth
                                 {...bindOldPassword}
                             />
                         </Grid>
@@ -55,10 +68,12 @@ const ChangePassword = (props) => {
                                 variant="filled"
                                 type="password"
                                 required
+                                fullWidth
                                 {...bindNewPassword}
                             />
+
                         </Grid>
-                        <Grid item xs={12} sm={12} className={classes.item}>
+                        <Grid item xs={12} sm={6} className={classes.item}>
                             <TextField
                                 label="Repetir Contraseña"
                                 margin="normal"
@@ -68,6 +83,7 @@ const ChangePassword = (props) => {
                                 fullWidth
                                 {...bindrepeatPassword}
                             />
+
                         </Grid>
                         <Grid item xs={12} className={classes.item}>
                             <Button type="submit" variant="contained" color="primary" style={{ width: '50%' }} >
@@ -79,7 +95,7 @@ const ChangePassword = (props) => {
                 {(message === '') ?
                     <>
                         <Box mt={1}>
-                            <Loading state={query} message="Cambio realizado"></Loading>
+                            <Loading state={query} message={message}></Loading>
                         </Box>
                     </> : (
                         <Box mt={1}>

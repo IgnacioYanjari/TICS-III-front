@@ -1,19 +1,6 @@
 import React from 'react';
 import MaterialTable from 'material-table';
 
-const formatRut = (text) => {
-    let filtered = text.split('').filter(val => !isNaN(val)).join('');
-    if (filtered.length === 0) return '';
-    let suffix = filtered[filtered.length - 1];
-    let preffix = filtered.substr(0, filtered.length - 1).split('').reverse()
-        .map((val, i) => {
-            return ((i + 1) % 3 === 0 || i === text.length) ? '.' + val : val;
-        }).reverse().join('');
-    let result = preffix + '-' + suffix
-    if (result[0] === '.') result = result.substr(1);
-    return result;
-}
-
 export default function UsersTable(props) {
     return (
         <MaterialTable
@@ -54,6 +41,7 @@ export default function UsersTable(props) {
                 }
             }}
             actions={props.actions}
+            isLoading={props.isLoading}
         />
     );
 }

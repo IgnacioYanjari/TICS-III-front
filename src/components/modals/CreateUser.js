@@ -6,6 +6,7 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { TextInput, Loading } from 'components';
+import { AdmService } from 'services';
 
 
 const useStyles = makeStyles(theme => ({
@@ -24,20 +25,33 @@ export default function CreateUser(props) {
     const [role, setRole] = useState('QAS');
     const [message, setMessage] = useState('');
     const [query, setQuery] = useState('')
+    const admService = new AdmService();
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        setMessage('');
-        setQuery('sending');
-        setTimeout(() => {
+        async function addUser(newUser) {
+            setQuery('sending');
+            let response;
+            try {
+                response = await admService.createUser(newUser);
+            } catch (e) {
+                console.log('crear usuario falló');
+            }
             setQuery('success');
-            setTimeout(() => {
-                props.closeModal({ name, surname, email, rut, role });
-            }, 3000);
-        }, 3000);
+            if (response.status === 'fail') {
+                delete response.status;
+                setMessage(response[Object.keys(response)[0]][0]);
+                return;
+            }
+            setMessage('Usuario creado con éxito');
+            newUser.id = response.id;
+            props.closeModal(newUser);
+            defaultValues();
+        }
+        addUser({ name, surname, email, rut, role, password });
     };
 
-    useEffect(() => {
+    const defaultValues = () => {
         setEmail('');
         setRut('');
         setPassword('');
@@ -46,7 +60,7 @@ export default function CreateUser(props) {
         setRole('QAS');
         setMessage('')
         setQuery('');
-    }, [])
+    };
 
     const changeRole = (event) => {
         setRole(event.target.value);
@@ -113,18 +127,10 @@ export default function CreateUser(props) {
                             <MenuItem value={'QAS'}>Control de calidad</MenuItem>
                             <MenuItem value={'ADM'}>Administrador</MenuItem>
                         </Select>
-                        {(message === '') ?
-                            <>
-                                <Box mt={1}>
-                                    <Loading state={query} message="Usuario creado con éxito"></Loading>
-                                </Box>
-                            </> : (
-                                <Box mt={1}>
-                                    <Typography variant="body2" align="center" color="inherit">
-                                        {message}
-                                    </Typography>
-                                </Box>
-                            )}
+                        <Box mt={1}>
+                            <Loading state={query} message={message}></Loading>
+                        </Box>
+
                         <DialogActions>
                             <Button onClick={props.closeModal} color="primary">
                                 Cancelar

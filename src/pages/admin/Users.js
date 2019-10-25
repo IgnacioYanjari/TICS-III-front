@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Template, UsersTable, CreateUser } from 'components';
 import { Paper, IconButton } from '@material-ui/core';
 import { PersonAdd as AddIcon } from '@material-ui/icons';
+import { AdmService } from 'services';
 import loginStyle from 'styles/Login';
 
 const formatRut = (text) => {
@@ -20,7 +21,7 @@ const formatRut = (text) => {
 export default function EditUsersPage() {
 
     const classes = loginStyle();
-
+    const admService = new AdmService();
     const [state, setState] = React.useState({
         columns: [
             { title: 'Nombre', field: 'name' },
@@ -37,48 +38,87 @@ export default function EditUsersPage() {
                 lookup: { 0: 'QAS', 1: 'ADM' }
             },
         ],
-        data: [
-            { name: 'Ignacio', surname: 'Yanjari', rut: '192098327', email: 'ignacio.yanjari@mail.udp.cl', role: 0 },
-            { name: 'Michiru', surname: 'Nakamura', rut: '203401817', email: 'michiru.nakamura@mail.udp.cl', role: 1 },
-        ],
+        data: [],
     });
-    const [open, setOpenModel] = React.useState(false);
+    const [open, setOpenModel] = useState(false);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        async function fetchData() {
+            let response;
+            try {
+                response = await admService.getUsers();
+            } catch (e) {
+                console.log('error al obtener datos');
+            }
+            setLoading(false);
+            let data = response.map(val => {
+                return {
+                    id: val.id,
+                    rut: val.username.replace(/\./gi, '').replace(/-/gi, ''),
+                    name: val.profile.name, surname: val.profile.surname,
+                    email: val.email,
+                    role: (val.profile.role === 'QAS') ? 0 : 1
+                }
+            });
+            console.log('data', data);
+            setState({ ...state, data });
+        }
+        fetchData();
+    }, []);
 
     const handleEdit = (newData, oldData) => {
         return new Promise(resolve => {
-            setTimeout(() => {
-                resolve();
-                const data = [...state.data];
-                data[data.indexOf(oldData)] = newData;
-                setState({ ...state, data });
-            }, 600);
+            async function edit(newData) {
+                let response;
+                try {
+                    response = await admService.editUser(newData);
+                    console.log(response);
+                    const data = [...state.data];
+                    data[data.indexOf(oldData)] = newData;
+                    setState({ ...state, data });
+                } catch (e) {
+                    console.log('falló el borrado de usuario');
+                }
+            }
+            let aux = { ...oldData };
+            delete aux.tableData;
+            if (JSON.stringify(newData) !== JSON.stringify(aux)) edit(newData);
+            resolve();
         })
     }
 
-    const handleDelete = oldData => {
+    const handleDelete = userDeleted => {
         return new Promise(resolve => {
-            setTimeout(() => {
-                resolve();
+            async function deleteUser(id) {
+                let response = await admService.deleteUser(id);
+                if (response.status === 'fail') {
+                    resolve();
+                    return;
+                }
                 const data = [...state.data];
-                data.splice(data.indexOf(oldData), 1);
+                data.splice(data.indexOf(userDeleted), 1);
                 setState({ ...state, data });
-            }, 600);
-        })
+                resolve();
+            }
+            deleteUser(userDeleted.id);
+        });
     }
 
-    const openModal = () => {
-        setOpenModel(true);
-    }
+    const openModal = () => setOpenModel(true);
 
     const closeModal = (newUser) => {
-        setOpenModel(false);
-        if ('role' in newUser) {
+        async function addUser(newUser) {
             const data = [...state.data];
             newUser.role = (newUser.role === 'QAS') ? 0 : 1;
+            newUser.id = newUser.id;
+            newUser.rut = newUser.rut.replace(/\./gi, '').replace(/-/gi, '')
             data.push(newUser);
             setState({ ...state, data });
         }
 
+        if ("id" in newUser) addUser(newUser);
+        setOpenModel(false);
     };
 
     return (
@@ -103,6 +143,7 @@ export default function EditUsersPage() {
                         data={state.data}
                         handleEdit={handleEdit}
                         handleDelete={handleDelete}
+                        isLoading={loading}
                     />
                 </Paper>
             </div>

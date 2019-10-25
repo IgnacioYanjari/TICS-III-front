@@ -7,11 +7,14 @@
     "@material-ui/icons": "^4.2.1",
     "jwt-decode": "^2.2.0",
     "material-table": "^1.50.0",
-    "react": "^16.9.0",
-    "react-dom": "^16.9.0",
+    "moment": "^2.24.0",
+    "react": "latest",
+    "react-dom": "latest",
+    "react-moment": "^0.9.6",
     "react-router": "^5.0.1",
-    "react-router-dom": "^5.0.1",
-    "react-scripts": "3.1.1"
+    "react-router-dom": "latest",
+    "react-scripts": "3.1.1",
+    "shortid": "^2.2.15"
   },
   "scripts": {
     "start": "react-scripts start HOST=0.0.0.0",

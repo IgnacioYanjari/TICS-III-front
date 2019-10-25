@@ -4,15 +4,14 @@ import {
   Typography, Container
 } from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import { Redirect } from "react-router";
+import { Redirect } from "react-router-dom";
 import LoginStyle from 'styles/Login.js';
 
 import { TextInput, Copyright, Loading } from 'components';
 import AuthService from 'services/AuthService';
 
 
-function LoginPage() {
-
+function LoginPage(props) {
   const classes = LoginStyle();
   const { value: rut, bind: bindRut } = TextInput('rut', '');
   const { value: password, bind: bindPassword } = TextInput('text', '');
@@ -33,7 +32,7 @@ function LoginPage() {
           return;
         }
         setMessage('Ingreso Correcto');
-
+        console.log(res);
         if (authService.isAdmin()) {
           setRedirect('/admin');
         } else {
@@ -50,7 +49,7 @@ function LoginPage() {
     if (authService.loggedIn()) {
       authService.isAdmin() ? setRedirect('/admin') : setRedirect('/calidad');
     }
-  }, [authService]);
+  });
 
   return (
     <div>

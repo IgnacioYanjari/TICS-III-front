@@ -31,7 +31,7 @@ export default function Template(props) {
     const classes = TemplateStyle();
     const [open, setOpen] = React.useState(false);
     const [logout, setLogout] = React.useState(false);
-    const { nombre, apellido, rol } = authService.getProfile();
+    const { name, surname, role } = authService.getProfile();
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -66,7 +66,7 @@ export default function Template(props) {
                             <ToHome />
                         </Typography>
                         <Typography component="h1" variant="h6" color="inherit" >
-                            {nombre} {apellido}
+                            {name} {surname}
                             <Tooltip title="Salir">
                                 <IconButton color="inherit" style={{ marginLeft: 20 }} onClick={handleLogout} >
                                     <ExitToAppIcon />
@@ -93,7 +93,7 @@ export default function Template(props) {
                     </div>
                     <Divider />
                     <List>
-                        <MainListItems open={open} role={rol} />
+                        <MainListItems open={open} role={role} />
                     </List>
                 </Drawer>
                 <main className={classes.content}>

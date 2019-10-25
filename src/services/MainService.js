@@ -3,8 +3,8 @@ import decode from "jwt-decode";
 class MainService {
   // Initializing important variables
   constructor(domain) {
-    this.domain = domain || "http://trazappapi2.herokuapp.com/api"; // API server domain
-    // this.domain = domain || "http://localhost:8000/api"; // API server domain
+    this.domain = domain || "http://trazappapi2.herokuapp.com"; // API server domain
+    // this.domain = domain || "http://localhost:8000"; // API server domain
     this.fetch = this.fetch.bind(this);
   }
 
@@ -15,8 +15,12 @@ class MainService {
       return !!token && !this.isTokenExpired(token); // handwaiving here
     }
     return false;
+  }
 
-
+  getProfile() {
+    // Using jwt-decode npm package to decode the token
+    let token = this.getToken();
+    return (token) ? decode(token) : {};
   }
 
   setToken(token) {
@@ -75,6 +79,7 @@ class MainService {
       return response;
     } else {
       console.log('error', response);
+      // return { ...response, status: 'fail' }
     }
   };
 }

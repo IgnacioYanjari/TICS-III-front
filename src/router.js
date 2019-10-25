@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { Redirect } from "react-router";
 import {
   LoginPage, NotFoundPage, AdminHomePage, QualityHomePage,
-  UserPage, EditUsersPage
+  UserPage, EditUsersPage, RouterStage
 } from "pages";
 import AuthService from "services/AuthService";
 
@@ -17,6 +17,7 @@ class RouterApp extends Component {
           <QARoute exact path="/calidad" component={QualityHomePage} />
           <Route exact path="/cuenta" component={UserPage} />
           <Route exact path="/" component={LoginPage} />
+          <Route path="/etapas/:name/operacion/:id" children={<RouterStage />} />
           <Route exact path="*" component={NotFoundPage} />
         </Switch>
       </Router>
