@@ -1,10 +1,6 @@
 import UserService from 'services/UserService';
 
 class QaService extends UserService {
-    // Initializing important variables
-    constructor(domain) {
-        super(domain);
-    }
 
     login(username, password) {
         // Get a token from api server using the fetch api
@@ -35,7 +31,7 @@ class QaService extends UserService {
                 }
             }
         ).then(res => {
-            if (res.status == 'fail') return Promise.resolve(res);
+            if (res.status === 'fail') return Promise.resolve(res);
             let aux = res.map(val => {
                 return {
                     id: val.id,

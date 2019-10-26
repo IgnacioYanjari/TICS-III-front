@@ -3,9 +3,6 @@ import {
     Typography, Grid, TextField, Card,
     Container, Divider, Button, Box
 } from '@material-ui/core';
-import {
-    CloudUpload as CloudUploadIcon
-} from '@material-ui/icons'
 import { Template, TextInput, Loading } from 'components';
 import UserStyle from 'styles/User';
 import ChangePassword from 'components/inputs/ChangePassword';
@@ -20,9 +17,7 @@ const UserPage = (props) => {
     const [message, setMessage] = useState('');
     const [query, setQuery] = useState('');
 
-    // const handleImage = (e) => {
-    //     console.log(e.target.files[0]);
-    // }
+
 
     const handleFormSubmit = async (e) => {
         e.preventDefault();
@@ -63,21 +58,6 @@ const UserPage = (props) => {
                                             alt="User Image"
                                         />
                                     </Grid>
-                                    {/* <Grid item xs={12} className={classes.item}>
-                                        <Button variant="contained" color="default"
-                                            component="label" className={classes.button}
-                                        >
-                                            Cambiar imagen
-                                            <input
-                                                type="file"
-                                                accept="image/*"
-                                                hidden
-                                                capture="camera"
-                                                onChange={handleImage}
-                                            />
-                                            <CloudUploadIcon className={classes.rightIcon} />
-                                        </Button>
-                                    </Grid> */}
                                 </Grid>
                                 <Grid item md={6} xs={12} sm={6}>
                                     <Grid item xs={12} className={classes.item}>

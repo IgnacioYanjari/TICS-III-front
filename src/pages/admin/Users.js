@@ -61,7 +61,6 @@ export default function EditUsersPage() {
                     role: (val.profile.role === 'QAS') ? 0 : 1
                 }
             });
-            console.log('data', data);
             setState({ ...state, data });
         }
         fetchData();
@@ -111,7 +110,6 @@ export default function EditUsersPage() {
         async function addUser(newUser) {
             const data = [...state.data];
             newUser.role = (newUser.role === 'QAS') ? 0 : 1;
-            newUser.id = newUser.id;
             newUser.rut = newUser.rut.replace(/\./gi, '').replace(/-/gi, '')
             data.push(newUser);
             setState({ ...state, data });

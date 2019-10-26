@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Grid, Paper, Box } from '@material-ui/core';
+import { Grid, Paper } from '@material-ui/core';
 import loginStyle from 'styles/Login.js';
 import { Template, OpTable, LinksPdf } from 'components';
 import { QaService } from 'services';
@@ -7,7 +7,7 @@ import { QaService } from 'services';
 export default function LoginPage() {
 
     const classes = loginStyle();
-    const [message, setmessage] = useState('');
+    // const [message, setmessage] = useState('');
     const [openList, setOpenList] = useState(false);
     const qaService = new QaService();
     const [state, setState] = useState({

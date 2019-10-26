@@ -1,5 +1,7 @@
-import { TextInput, ChangePassword } from './inputs';
-import { OpTable, UsersTable } from './tables';
+import {
+  TextInput, ChangePassword, ImageList
+} from './inputs';
+import { OpTable, UsersTable, ResumeTable } from './tables';
 import { CreateUser, LinksPdf } from './modals';
 import Copyright from './Copyright';
 import Template from './template/Template';
@@ -14,5 +16,7 @@ export {
   ChangePassword,
   Loading,
   CreateUser,
-  LinksPdf
+  LinksPdf,
+  ResumeTable,
+  ImageList
 }

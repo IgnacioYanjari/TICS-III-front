@@ -1,11 +1,6 @@
 import UserService from 'services/UserService';
 
 class AdmService extends UserService {
-    // Initializing important variables
-    constructor(domain) {
-        super(domain);
-    }
-
     getUsers() {
         // Get a token from api server using the fetch api
         return this.fetch(
@@ -94,7 +89,7 @@ class AdmService extends UserService {
                 }
             }
         ).then(res => {
-            if (res.status == 'fail') return Promise.resolve(res);
+            if (res.status === 'fail') return Promise.resolve(res);
             let aux = res.map(val => {
                 return {
                     id: val.id,
@@ -119,7 +114,7 @@ class AdmService extends UserService {
                 }
             }
         ).then(res => {
-            if (res.status == 'fail') return Promise.resolve(res);
+            if (res.status === 'fail') return Promise.resolve(res);
             let aux = res.map(val => {
                 return {
                     id: val.id,

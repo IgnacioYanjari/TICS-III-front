@@ -18,7 +18,7 @@ export default function RouterStage() {
     const [link, setLink] = React.useState('');
     const links = [
         'coccion', 'porcionado', 'enfriamiento',
-        'horneo', 'ultracongelacion', 'metales', 'aprobación'
+        'horneo', 'ultracongelacion', 'metales', 'aprobacion'
     ];
     const components = {
         porcionado: <StagePortioned />,
@@ -27,10 +27,9 @@ export default function RouterStage() {
         horneo: <StageBake />,
         ultracongelacion: <StageDeepFreezing />,
         metales: <StageMetalDetector />,
-        aprobación: <StageApproval />,
+        aprobacion: <StageApproval />,
     }
     useEffect(() => {
-        console.log({ links, name, idOp });
         (links.indexOf(name) === -1) ? setLink('/') : setLink('');
         // Verificar si puede entrar a esta id op y etapa con token respectivo
     }, [])

@@ -2,22 +2,16 @@ import React, { useState, useEffect } from 'react';
 import {
     Button, Dialog, DialogActions,
     DialogContent, DialogTitle, Box, Typography,
-    Divider, List, ListItem, ListItemIcon, ListItemText
+    List, ListItem, ListItemIcon, ListItemText
 } from '@material-ui/core';
 import {
     Link as LinkIcon
 } from '@material-ui/icons'
-import { makeStyles } from '@material-ui/core/styles';
 import { Loading } from 'components';
 import shortid from 'shortid';
 
-
-const useStyles = makeStyles(theme => ({
-
-}));
-
 export default function LinksPdf(props) {
-    const classes = useStyles();
+    // const classes = useStyles();
     const [query, setQuery] = useState('');
     const [links, setLinks] = useState([]);
     const [message, setMessage] = useState('')

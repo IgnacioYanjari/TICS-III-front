@@ -1,23 +1,39 @@
-import React, { useState } from 'react';
-import { Grid, Paper } from '@material-ui/core';
-import loginStyle from 'styles/Login.js';
-import { Template } from 'components';
+import React, { useState, useEffect } from 'react';
+import {
+    Grid, Container, CssBaseline
+} from '@material-ui/core';
+// import loginStyle from 'styles/Login.js';
+import { QaService } from 'services';
+import { ResumeTable } from 'components/tables/index';
 
 export default function StageCooling() {
 
-    const classes = loginStyle();
-    const [message, setmessage] = useState('');
+    // const classes = loginStyle();
+    // const [message, setmessage] = useState('');
+    const [data, setData] = useState({});
+    const qaService = new QaService();
+
+    useEffect(() => {
+        const user = qaService.getProfile();
+        setData({
+            title: 'Enfriamiento',
+            opId: 100,
+            client: 'Mac Donalds',
+            qaUser: user.name + ' ' + user.surname
+        });
+    }, [])
 
     return (
-        <Template >
-            <Grid container spacing={1}>
-                {/* Lista de Activos*/}
-                <Grid className={classes.paper} item xs={12}>
-                    <Paper style={{ width: '100%' }}>
-                        <h1> Congelación </h1>
-                    </Paper>
+        <div >
+            <CssBaseline />
+            <Container maxWidth="lg" >
+                <Grid container spacing={1}>
+                    {/* Lista de Activos*/}
+                    <Grid item xs={12}>
+                        <ResumeTable data={data} />
+                    </Grid>
                 </Grid>
-            </Grid>
-        </Template >
+            </Container>
+        </div>
     );
 }

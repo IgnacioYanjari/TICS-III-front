@@ -26,7 +26,18 @@ const loginStyle = makeStyles(theme => ({
   },
   add: {
     margin: theme.spacing(1),
-  }
+  },
+  title: {
+    margin: theme.spacing(2),
+  },
+  subtitle: {
+    marginTop: theme.spacing(3),
+    marginBottom: theme.spacing(1),
+  },
+  rightIcon: {
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1),
+  },
 
 }));
 

@@ -1,10 +1,6 @@
 import MainService from 'services/MainService';
 
 class UserService extends MainService {
-    // Initializing important variables
-    constructor(domain) {
-        super(domain);
-    }
 
     updatePassword(data, userId) {
         return this.fetch(
