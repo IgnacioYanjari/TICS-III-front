@@ -155,7 +155,7 @@ export default function StageCooking() {
                     </Grid>
                 </Grid>
             </Container>
-            <Box mt={3} mb={5} align="center">
+            <Box mt={5} mb={5} align="center">
                 <form onSubmit={handleSubmit} >
                     <Button type="submit" variant="contained" color="primary" size="large">
                         Terminar Etapa
