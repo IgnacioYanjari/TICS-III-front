@@ -2,13 +2,8 @@ import React, {
     useState, useEffect, useRef
 } from 'react';
 import {
-    Grid, Container, CssBaseline, Box, Button,
-    Paper, Typography, List, ListItem, ListItemText,
-    ListItemIcon
+    Grid, Container, CssBaseline, Box, Button
 } from '@material-ui/core';
-import {
-    Info as InfoIcon, Help as HelpIcon
-} from '@material-ui/icons';
 import loginStyle from 'styles/Login.js';
 import { QaService } from 'services';
 import {
