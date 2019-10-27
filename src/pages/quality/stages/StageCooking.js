@@ -32,12 +32,12 @@ export default function StageCooking() {
         { title: 'Cantidad', field: 'quantity', type: 'numeric' },
         {
             title: 'Hora Inicio', field: 'start_time', type: 'time', render: data => (
-                <Moment date={data.start_time} format="HH:mm" />
+                <Moment date={data.start_time} format="HH:mm A" />
             )
         },
         {
             title: 'Hora Termino', field: 'finish_time', type: 'time', render: data => (
-                <Moment date={data.finish_time} format="HH:mm" />
+                <Moment date={data.finish_time} format="HH:mm A" />
             )
         },
         { title: 'Tº Final', field: 'temperature', type: 'numeric' },
@@ -59,7 +59,8 @@ export default function StageCooking() {
             data: [
                 'Aumentar el tiempo de cocción hasta alcanzar los 75º C.',
                 'Revisar el correcto funcionamiento del equipo'
-            ]
+            ],
+            key: shortid.generate()
         },
         {
             title: 'Opcionales',
@@ -67,7 +68,8 @@ export default function StageCooking() {
                 'Peligro: Contaminación por proliferación de microorganismos al no alcanzar la temperatura establecida.',
                 'Límite Crítico: La temperatura de cocción debe ser ≥ 75º.',
                 'Monitoreo: Se revisa la temperatura final de cada preparación.'
-            ]
+            ],
+            key: shortid.generate()
         }
     ]
     const [merma, setMerma] = useState({
@@ -107,25 +109,23 @@ export default function StageCooking() {
     const listSugestions = () => (
         sugestions.map(val => {
             return (
-                <>
-                    <Grid item xs={12} md={6}>
-                        <Paper className={classes.paper} style={{ width: '100%' }}>
-                            <Typography className={classes.subtitle} align="center" variant="h6"> {val.title}
-                                <HelpIcon className={classes.rightIcon} />
-                            </Typography>
-                            <List component="nav" aria-label="opcional-list">
-                                {val.data.map(aux => (
-                                    <ListItem button>
-                                        <ListItemIcon >
-                                            <InfoIcon color="primary" />
-                                        </ListItemIcon>
-                                        <ListItemText primary={aux} />
-                                    </ListItem>
-                                ))}
-                            </List>
-                        </Paper>
-                    </Grid>
-                </>
+                <Grid item xs={12} md={6} key={val.key}>
+                    <Paper className={classes.paper} style={{ width: '100%' }}>
+                        <Typography className={classes.subtitle} align="center" variant="h6"> {val.title}
+                            <HelpIcon className={classes.rightIcon} />
+                        </Typography>
+                        <List component="nav" aria-label="opcional-list">
+                            {val.data.map(aux => (
+                                <ListItem button key={shortid.generate()}>
+                                    <ListItemIcon >
+                                        <InfoIcon color="primary" />
+                                    </ListItemIcon>
+                                    <ListItemText primary={aux} />
+                                </ListItem>
+                            ))}
+                        </List>
+                    </Paper>
+                </Grid>
             )
         })
     );

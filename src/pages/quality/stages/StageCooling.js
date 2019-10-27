@@ -26,12 +26,12 @@ export default function StageCooling() {
         { title: 'Cantidad', field: 'quantity', type: 'numeric' },
         {
             title: 'Hora Inicio', field: 'start_time', type: 'time', render: data => (
-                <Moment date={data.start_time} format="HH:mm" />
+                <Moment date={data.start_time} format="HH:mm A" />
             )
         },
         {
             title: 'Hora Termino', field: 'finish_time', type: 'time', render: data => (
-                <Moment date={data.finish_time} format="HH:mm" />
+                <Moment date={data.finish_time} format="HH:mm A" />
             )
         },
         { title: 'Tº Final', field: 'temperature', type: 'numeric' },
@@ -48,7 +48,7 @@ export default function StageCooling() {
     const handleSubmit = (e) => {
         e.preventDefault();
         let dataMainTable = refMainTable.current.getData();
-        console.log({ dataMainTable });
+        console.log({ dataMainTable, merma });
     }
 
     const handleText = (pos, text, image) => {

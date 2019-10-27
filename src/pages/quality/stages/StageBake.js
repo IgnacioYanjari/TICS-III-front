@@ -34,12 +34,12 @@ export default function StageBake() {
         { title: 'Cantidad', field: 'quantity', type: 'numeric' },
         {
             title: 'Hora Entrada', field: 'start_time', type: 'time', render: data => (
-                <Moment date={data.start_time} format="HH:mm" />
+                <Moment date={data.start_time} format="HH:mm A" />
             )
         },
         {
             title: 'Hora Salida', field: 'finish_time', type: 'time', render: data => (
-                <Moment date={data.finish_time} format="HH:mm" />
+                <Moment date={data.finish_time} format="HH:mm A" />
             )
         },
         { title: 'Tº Termino', field: 'temperature', type: 'numeric' },
@@ -52,7 +52,8 @@ export default function StageBake() {
                 'Aumentar tiempo de horneo.',
                 'Evaluar características organolépticas del producto.',
                 'Revisión del correcto funcionamiento de los hornos.'
-            ]
+            ],
+            key: shortid.generate()
         },
         {
             title: 'Opcionales',
@@ -60,7 +61,8 @@ export default function StageBake() {
                 'Peligro: Contaminación por proliferación de microorganismos por sobre los límites establecidos.',
                 'Límite Crítico: La temperatura en centro térmico debe ser ≥ 70º C. Tiempo de horneo 3-5 minutos.',
                 'Monitoreo: Se realiza la medición de temperatura de cada carro de empanadas a la salida del horno.'
-            ]
+            ],
+            key: shortid.generate()
         }
     ]
     const [merma, setMerma] = useState({
@@ -92,31 +94,32 @@ export default function StageBake() {
     const listSugestions = () => (
         sugestions.map(val => {
             return (
-                <>
-                    <Grid item xs={12} md={6}>
-                        <Paper className={classes.paper} style={{ width: '100%' }}>
-                            <Typography className={classes.subtitle} align="center" variant="h6"> {val.title}
-                                <HelpIcon className={classes.rightIcon} />
-                            </Typography>
-                            <List component="nav" aria-label="opcional-list">
-                                {val.data.map(aux => (
-                                    <ListItem button>
-                                        <ListItemIcon >
-                                            <InfoIcon color="primary" />
-                                        </ListItemIcon>
-                                        <ListItemText primary={aux} />
-                                    </ListItem>
-                                ))}
-                            </List>
-                        </Paper>
-                    </Grid>
-                </>
+                <Grid item xs={12} md={6} key={val.key}>
+                    <Paper className={classes.paper} style={{ width: '100%' }}>
+                        <Typography className={classes.subtitle} align="center" variant="h6"> {val.title}
+                            <HelpIcon className={classes.rightIcon} />
+                        </Typography>
+                        <List component="nav" aria-label="opcional-list">
+                            {val.data.map(aux => (
+                                <ListItem button key={shortid.generate()}>
+                                    <ListItemIcon >
+                                        <InfoIcon color="primary" />
+                                    </ListItemIcon>
+                                    <ListItemText primary={aux} />
+                                </ListItem>
+                            ))}
+                        </List>
+                    </Paper>
+                </Grid>
             )
         })
     );
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        let dataMainTable = refMainTable.current.getData();
+        console.log('data', { dataMainTable, merma });
+
     }
 
     return (

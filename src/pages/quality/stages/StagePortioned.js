@@ -67,7 +67,7 @@ export default function StagePortioned() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log('entra');
+        console.log('data', { merma, lote });
     }
 
     return (
