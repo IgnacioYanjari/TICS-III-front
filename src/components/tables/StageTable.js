@@ -15,16 +15,18 @@ const StageTable = forwardRef((props, ref) => {
     const qaService = new QaService();
 
     useImperativeHandle(ref, () => ({
-
         getData() {
             return table.data;
         }
-
     }));
 
     useEffect(() => {
         let aux = { ...table };
         aux.columns = props.columns;
+        setTable(aux);
+        if (props.type === 'stage8') {
+            aux.data = props.data
+        }
         setTable(aux);
     }, [])
 
@@ -44,21 +46,39 @@ const StageTable = forwardRef((props, ref) => {
                 const data = [...table.data];
                 data.push(newData);
                 setTable({ ...table, data });
-            }, 1000);
+            }, 500);
         });
     }
 
     const onRowDelete = oldData => {
-        new Promise(resolve => {
+        return new Promise(resolve => {
             setTimeout(() => {
                 resolve();
                 const data = [...table.data];
                 data.splice(data.indexOf(oldData), 1);
                 setTable({ ...table, data });
-            }, 600);
+            }, 500);
         });
     }
 
+    const onRowUpdate = (newData, oldData) => {
+        return new Promise(resolve => {
+            setTimeout(() => {
+                resolve();
+                const data = [...table.data];
+                data[data.indexOf(oldData)] = newData;
+                setTable({ ...table, data });
+            }, 500);
+        });
+    }
+
+    let editable = {}
+    if (props.edit) {
+        editable['onRowUpdate'] = onRowUpdate;
+    } else {
+        editable['onRowAdd'] = onRowAdd;
+        editable['onRowDelete'] = onRowDelete;
+    }
 
     return (
         <>
@@ -70,10 +90,7 @@ const StageTable = forwardRef((props, ref) => {
                     data={table.data}
                     title=""
                     columns={table.columns}
-                    editable={{
-                        onRowAdd: onRowAdd,
-                        onRowDelete: onRowDelete
-                    }}
+                    editable={editable}
                 />
             </Paper>
         </>

@@ -1,5 +1,5 @@
 import {
-  TextInput, ChangePassword, ImageList
+  TextInput, ChangePassword, ImageList, EditRow, EditRows
 } from './inputs';
 import { OpTable, UsersTable, ResumeTable, StageTable } from './tables';
 import { CreateUser, LinksPdf } from './modals';
@@ -19,5 +19,7 @@ export {
   LinksPdf,
   ResumeTable,
   ImageList,
-  StageTable
+  StageTable,
+  EditRow,
+  EditRows
 }

@@ -38,6 +38,9 @@ const loginStyle = makeStyles(theme => ({
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
   },
+  item: {
+    padding: theme.spacing(1)
+  }
 
 }));
 

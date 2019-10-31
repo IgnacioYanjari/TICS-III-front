@@ -119,7 +119,6 @@ export default function StageBake() {
         e.preventDefault();
         let dataMainTable = refMainTable.current.getData();
         console.log('data', { dataMainTable, merma });
-
     }
 
     return (

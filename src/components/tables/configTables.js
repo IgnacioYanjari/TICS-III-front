@@ -1,6 +1,6 @@
 export default {
     options: {
-        pageSize: 5,
+        pageSize: 10,
         pageSizeOptions: [],
         sorting: false,
         draggable: false,
