@@ -7,6 +7,12 @@ const loginStyle = makeStyles(theme => ({
     flexDirection: 'column',
     alignItems: 'center',
   },
+  create: {
+    marginTop: theme.spacing(4),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
   avatar: {
     margin: theme.spacing(1),
     backgroundColor: theme.palette.common.grey,

@@ -1,4 +1,5 @@
 import UserService from 'services/UserService';
+import shortid from 'shortid';
 
 class AdmService extends UserService {
     getUsers() {
@@ -104,6 +105,24 @@ class AdmService extends UserService {
         });
     }
 
+    createOrder(data) {
+        return this.fetch(
+            `${this.domain}/orders/create`,
+            {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + this.getToken(),
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            }
+        ).then(res => {
+            if (res.status === 'fail') return Promise.resolve(res);
+            return res;
+        });
+    }
+
     endedOrders() {
         return this.fetch(
             `${this.domain}/orders/ended`,
@@ -126,6 +145,89 @@ class AdmService extends UserService {
                 }
             });
             return Promise.resolve(aux);
+        });
+    }
+
+    cancelOrder(id) {
+        return this.fetch(
+            `${this.domain}/orders/${id}/cancel`,
+            {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + this.getToken()
+                }
+            }
+        ).then(res => {
+            if (res.status === 'fail') return Promise.resolve(res);
+            return Promise.resolve(res);
+        });
+    }
+
+    updateOrder(id, start_date, finish_date) {
+        return this.fetch(
+            `${this.domain}/orders/${id}`,
+            {
+                method: 'PATCH',
+                headers: {
+                    'Authorization': 'Bearer ' + this.getToken()
+                },
+                body: JSON.stringify({ start_date, finish_date })
+            }
+        ).then(res => {
+            if (res.status === 'fail') return Promise.reject();
+            let aux = res.map(val => {
+                return {
+                    id: val.id,
+                    stage: val.current_stage.name,
+                    client: val.customer.name,
+                    start_date: val.start_date,
+                    finish_date: val.finish_date,
+                    product: val.product.name
+                }
+            });
+            return Promise.resolve(aux);
+        });
+    }
+
+    getClients() {
+        return this.fetch(
+            `${this.domain}/customers`,
+            {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + this.getToken()
+                }
+            }
+        ).then(res => {
+            let aux = res.map(val => {
+                return {
+                    id: val.id,
+                    name: val.name,
+                    shortid: shortid.generate()
+                }
+            });
+            return aux;
+        });
+    }
+
+    getProducts() {
+        return this.fetch(
+            `${this.domain}/products`,
+            {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + this.getToken()
+                }
+            }
+        ).then(res => {
+            let aux = res.map(val => {
+                return {
+                    id: val.id,
+                    name: val.name,
+                    shortid: shortid.generate()
+                }
+            });
+            return aux;
         });
     }
 

@@ -8,13 +8,15 @@ import {
     Link as LinkIcon
 } from '@material-ui/icons'
 import { Loading } from 'components';
+import { OpService } from 'services';
 import shortid from 'shortid';
 
 export default function LinksPdf(props) {
-    // const classes = useStyles();
+
     const [query, setQuery] = useState('');
     const [links, setLinks] = useState([]);
     const [message, setMessage] = useState('')
+    const opService = new OpService();
 
     useEffect(() => {
         // Llamar ruta para cargar links
@@ -23,19 +25,23 @@ export default function LinksPdf(props) {
             setLinks([]);
             return;
         };
-        setQuery('sending')
-        setTimeout(() => {
+        setQuery('sending');
+        async function getLinks() {
+            let res = await opService.getLinks(props.opId);
+            console.log(res);
+            setLinks(res);
             setQuery('success');
-            // Si existe
-            setLinks([
-                { link: 'https://google.com', name: 'google', shortid: shortid.generate() },
-                { link: 'https://facebook.com', name: 'facebook', shortid: shortid.generate() }
-            ]);
             // Si no existe
             setMessage('No se ha terminado ninguna etapa');
-        }, 3000);
+        }
+        getLinks();
 
     }, [props.open]);
+
+    let closeModal = () => {
+        setLinks([]);
+        props.closeModal();
+    }
 
     let renderList = () => {
         if (links.length === 0) {
@@ -68,14 +74,14 @@ export default function LinksPdf(props) {
     return (
         <>
             <Dialog
-                open={props.open} onClose={props.closeModal} aria-labelledby="form-dialog-title"
+                open={props.open} onClose={closeModal} aria-labelledby="form-dialog-title"
             >
                 <DialogTitle >Informes de etapas realizadas</DialogTitle>
                 <DialogContent>
                     <Loading state={query} message=""></Loading>
                     {renderList()}
                     <DialogActions>
-                        <Button onClick={props.closeModal} color="primary">
+                        <Button onClick={closeModal} color="primary">
                             Cerrar
                         </Button>
                     </DialogActions>
