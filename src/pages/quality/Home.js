@@ -69,9 +69,9 @@ export default function LoginPage() {
                 closeModal={() => setOpenList(false)}
             />
             {(linkOp !== '') ? <Redirect to={linkOp} /> : null}
-            <Grid container component="main" spacing={1}>
+            <Grid container spacing={1} direction="row" justify="center" alignItems="center" >
                 {/* Lista de Activos*/}
-                <Grid className={classes.paper} item xs={12} md={12} xl={12} lg={12}>
+                <Grid className={classes.paper} item >
                     <Paper style={{ width: '100%' }}>
                         <OpTable
                             title="Ordenes"

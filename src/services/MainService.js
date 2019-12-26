@@ -3,7 +3,7 @@ import decode from "jwt-decode";
 class MainService {
   // Initializing important variables
   constructor(domain) {
-    this.domain = domain || "http://trazappapi2.herokuapp.com"; // API server domain
+    this.domain = domain || "https://trazappapi2.herokuapp.com"; // API server domain
     // this.domain = domain || "http://localhost:8000"; // API server domain
     this.fetch = this.fetch.bind(this);
   }
