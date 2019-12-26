@@ -69,7 +69,7 @@ export default function LoginPage() {
                 closeModal={() => setOpenList(false)}
             />
             {(linkOp !== '') ? <Redirect to={linkOp} /> : null}
-            <Grid container spacing={1}>
+            <Grid container component="main" spacing={1}>
                 {/* Lista de Activos*/}
                 <Grid className={classes.paper} item xs={12} md={12} xl={12} lg={12}>
                     <Paper style={{ width: '100%' }}>

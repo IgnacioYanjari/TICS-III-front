@@ -8,9 +8,12 @@
     "@material-ui/core": "^4.3.3",
     "@material-ui/icons": "^4.2.1",
     "date-fns": "^2.0.0-beta.5",
+    "express": "^4.17.1",
+    "express-favicon": "^2.0.1",
     "jwt-decode": "^2.2.0",
     "material-table": "^1.50.0",
     "moment": "^2.24.0",
+    "path": "^0.12.7",
     "react": "latest",
     "react-dom": "latest",
     "react-moment": "^0.9.6",
@@ -20,7 +23,8 @@
     "shortid": "^2.2.15"
   },
   "scripts": {
-    "start": "react-scripts start HOST=0.0.0.0",
+    "start": "node server.js",
+    "start-dev": "react-scripts start HOST=0.0.0.0",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
