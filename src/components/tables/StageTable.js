@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { QaService } from 'services';
 import loginStyle from 'styles/Login.js';
 import MaterialTable from 'material-table';
 import config from './configTables';
@@ -12,7 +11,6 @@ const StageTable = forwardRef((props, ref) => {
         columns: [],
         data: [],
     });
-    const qaService = new QaService();
 
     useImperativeHandle(ref, () => ({
         getData() {

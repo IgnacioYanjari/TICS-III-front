@@ -2,7 +2,7 @@ import {
   TextInput, ChangePassword, ImageList, EditRow, EditRows
 } from './inputs';
 import { OpTable, UsersTable, ResumeTable, StageTable } from './tables';
-import { CreateUser, LinksPdf, CreateOp } from './modals';
+import { CreateUser, LinksPdf, CreateOp, Info } from './modals';
 import Copyright from './Copyright';
 import Template from './template/Template';
 import Loading from './Loading';
@@ -22,5 +22,6 @@ export {
   StageTable,
   EditRow,
   EditRows,
-  CreateOp
+  CreateOp,
+  Info
 }

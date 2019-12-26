@@ -49,7 +49,9 @@ class AdmService extends UserService {
             {
                 method: 'GET',
                 headers: {
-                    'Authorization': 'Bearer ' + this.getToken()
+                    'Authorization': 'Bearer ' + this.getToken(),
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
                 }
             }
         ).then(res => Promise.resolve(res));
@@ -86,7 +88,9 @@ class AdmService extends UserService {
             {
                 method: 'GET',
                 headers: {
-                    'Authorization': 'Bearer ' + this.getToken()
+                    'Authorization': 'Bearer ' + this.getToken(),
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
                 }
             }
         ).then(res => {
@@ -129,7 +133,9 @@ class AdmService extends UserService {
             {
                 method: 'GET',
                 headers: {
-                    'Authorization': 'Bearer ' + this.getToken()
+                    'Authorization': 'Bearer ' + this.getToken(),
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
                 }
             }
         ).then(res => {
@@ -154,7 +160,9 @@ class AdmService extends UserService {
             {
                 method: 'GET',
                 headers: {
-                    'Authorization': 'Bearer ' + this.getToken()
+                    'Authorization': 'Bearer ' + this.getToken(),
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
                 }
             }
         ).then(res => {
@@ -169,22 +177,22 @@ class AdmService extends UserService {
             {
                 method: 'PATCH',
                 headers: {
-                    'Authorization': 'Bearer ' + this.getToken()
+                    'Authorization': 'Bearer ' + this.getToken(),
+                    'Content-Type': 'application/json;charset=UTF-8'
                 },
                 body: JSON.stringify({ start_date, finish_date })
             }
         ).then(res => {
             if (res.status === 'fail') return Promise.reject();
-            let aux = res.map(val => {
-                return {
-                    id: val.id,
-                    stage: val.current_stage.name,
-                    client: val.customer.name,
-                    start_date: val.start_date,
-                    finish_date: val.finish_date,
-                    product: val.product.name
-                }
-            });
+            res = res.order;
+            let aux = {
+                id: res.id,
+                stage: res.current_stage.name,
+                client: res.customer.name,
+                start_date: res.start_date,
+                finish_date: res.finish_date,
+                product: res.product.name
+            }
             return Promise.resolve(aux);
         });
     }
@@ -195,7 +203,9 @@ class AdmService extends UserService {
             {
                 method: 'GET',
                 headers: {
-                    'Authorization': 'Bearer ' + this.getToken()
+                    'Authorization': 'Bearer ' + this.getToken(),
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
                 }
             }
         ).then(res => {

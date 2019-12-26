@@ -14,13 +14,11 @@ class OpService extends UserService {
                 },
             }
         ).then(res => {
+            console.log('original', res);
             if (res.status === 'fail') return Promise.resolve(res);
-            res = [
-                { link: 'https://google.com', name: 'google' },
-                { link: 'https://facebook.com', name: 'facebook' }
-            ]
             let aux = res.map(val => {
                 let aux_2 = val;
+                aux_2.link = `${this.domain}${aux_2.link}`
                 aux_2.shortid = shortid.generate();
                 return aux_2;
             });
@@ -28,5 +26,25 @@ class OpService extends UserService {
         });
     }
 
+    finishStage(obj, opId) {
+        let formData = new FormData();
+        formData.append('data', JSON.stringify(obj.data));
+        formData.append('comments', JSON.stringify(obj.comments));
+        formData.append('types', JSON.stringify(obj.types));
+        for (const file of obj.images) {
+            formData.append('images', file);
+        }
+        return this.fetch(`${this.domain}/orders/${opId}/end`,
+            {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + this.getToken()
+                },
+                body: formData
+            }
+        ).then(res => {
+            console.log(res);
+        })
+    }
 }
 export default OpService;

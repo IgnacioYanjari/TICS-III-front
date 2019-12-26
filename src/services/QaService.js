@@ -45,6 +45,39 @@ class QaService extends UserService {
         });
     }
 
+    inscribeOp(opId) {
+        return this.fetch(
+            `${this.domain}/orders/${opId}/begin`,
+            {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + this.getToken()
+                }
+            }
+        ).then(res => Promise.resolve(res));
+    }
+
+    verifyAccessStage(opId, stageId) {
+        return this.fetch(
+            `${this.domain}/orders/${opId}/stage/${stageId}`,
+            {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + this.getToken()
+                }
+            }
+        ).then(res => {
+            if (res.status === 'fail') return Promise.resolve(res);
+            let aux = {
+                opId: res.order.id,
+                client: res.order.customer.name,
+                stage: res.order.current_stage.name,
+                product: res.order.product.name
+            };
+            return Promise.resolve(aux);
+        });
+    }
+
 }
 
 export default QaService;

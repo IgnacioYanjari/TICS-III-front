@@ -8,7 +8,7 @@ import UserStyle from 'styles/User';
 import ChangePassword from 'components/inputs/ChangePassword';
 import { AuthService, UserService } from 'services';
 
-const UserPage = (props) => {
+const UserPage = () => {
     const classes = UserStyle();
     const authService = new AuthService();
     const userService = new UserService();
@@ -55,7 +55,6 @@ const UserPage = (props) => {
                                         <img
                                             className={classes.image}
                                             src={require('images/default-user.jpeg')}
-                                            alt="User Image"
                                         />
                                     </Grid>
                                 </Grid>

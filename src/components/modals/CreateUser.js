@@ -60,6 +60,7 @@ export default function CreateUser(props) {
         setRole('QAS');
         setMessage('')
         setQuery('');
+        setMessage('');
     };
 
     const changeRole = (event) => {

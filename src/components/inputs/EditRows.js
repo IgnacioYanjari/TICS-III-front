@@ -11,7 +11,7 @@ const EditRows = forwardRef((props, ref) => {
     useEffect(() => {
         let aux = props.data.map(val => { return { ...val, focus: false } })
         setData(aux);
-    }, []);
+    }, [props.data]);
 
     useImperativeHandle(ref, () => ({
         getData() {

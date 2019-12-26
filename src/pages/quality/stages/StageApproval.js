@@ -7,28 +7,32 @@ import {
     InputLabel, Table, TableBody,
     TableRow, TableCell
 } from '@material-ui/core';
+import { Redirect } from "react-router-dom";
 import loginStyle from 'styles/Login.js';
-import { QaService } from 'services';
+import { QaService, OpService } from 'services';
 import {
     Copyright, StageTable, TextInput, EditRows
 } from 'components';
 import Moment from 'react-moment';
 import shortid from 'shortid';
 import moment from 'moment';
+import checkValues from 'utils/checkValues';
 
-export default function StageApproval() {
+export default function StageApproval(props) {
 
 
     const classes = loginStyle();
     const refMainTable = useRef();
     const refEditResume = useRef();
-    // const [message, setmessage] = useState('');
+    const [message, setMessage] = useState('');
+    const [redirect, setRedirect] = useState('');
+    const opService = new OpService();
     const { value: state, setValue: setState } = TextInput('state', 0);
     const { value: verification, bind: bindVerification } = TextInput('verification', '');
     const [resume, setResume] = useState({});
     const mainTable = {
         columns: [
-            { title: 'Parametro a controlar', field: 'parameter', editable: 'never' },
+            { title: 'Parámetro a controlar', field: 'parameter', editable: 'never' },
             { title: 'Cumple', field: 'success', lookup: { 1: 'SI', 0: 'No' } },
             { title: 'Nº de muestras defectuosas', field: 'sample', type: 'numeric' },
         ],
@@ -48,10 +52,6 @@ export default function StageApproval() {
     const editRows = [
         { title: 'Lote', type: 'text', val: '' },
         { title: 'Fecha vencimiento', type: 'date', val: moment() },
-        {
-            title: 'Fecha de revisión', type: 'static', val:
-                <Moment format={"D MMMM YYYY"}>{new Date()}</Moment>
-        },
         { title: 'Total de cajas', type: 'numeric', val: '' },
         { title: 'Cantidad de cajas revisadas', type: 'numeric', val: '' },
     ]
@@ -61,32 +61,76 @@ export default function StageApproval() {
         setResume({
             opId: {
                 title: 'Orden de producción (ID)',
-                value: 100,
+                value: props.data.opId,
             },
             product: {
                 title: 'Producto',
-                value: 'Empanada Pino',
+                value: props.data.product,
             },
             date_check: {
                 title: 'Fecha de revisión',
                 value: <Moment format={"D MMMM YYYY"}>{new Date()}</Moment>
             }
         });
-    }, []);
+    }, [props]);
+
+    const checkInputs = (data) => {
+        // Revisar dataRows, state, verification
+        for (let i = 0; i < data.length; i++) {
+            if (data[i].type !== 'table') {
+                if (data[i].value.length === 0) return false;
+            }
+        }
+        return true;
+    }
 
     const handleSubmit = (e) => {
         e.preventDefault();
         let dataMainTable = refMainTable.current.getData();
         let dataRows = refEditResume.current.getData();
+        async function sendForm(data) {
+            await opService.finishStage(data, props.data.opId)
+        }
+        let data = [
+            { type: 'single', title: 'Estado', value: (state) ? 'Si' : 'No' },
+            { type: 'single', title: 'Encargado de Verificación', value: verification },
+            { type: 'single', title: 'Encargado de Monitoreo', value: user.name + ' ' + user.surname },
+            { type: 'single', title: 'ID Orden de producción', value: props.data.opId.toString() },
+            { type: 'single', title: 'Producto', value: props.data.product },
+            { type: 'single', title: 'Fecha Revisión', value: moment().format("YYYY-MM-DD") },
+            { type: 'single', title: 'Fecha Vencimiento', value: dataRows[1].val.format("YYYY-MM-DD") },
+            { type: 'single', title: 'Lote', value: dataRows[0].val },
+            { type: 'single', title: 'Total de cajas', value: dataRows[2].val },
+            { type: 'single', title: 'Cantidad de cajas revisadas', value: dataRows[3].val },
+            {
+                type: 'table',
+                title: 'Tabla Principal',
+                headers: mainTable.columns.map(val => {
+                    return { title: val.title, field: val.field }
+                }),
+                data: dataMainTable
+            }
+        ];
+        console.log('checks', { 1: checkInputs(data), 2: checkValues({ dataMainTable }) });
         // Para sacar la fecha en el formato deseado
-        // console.log('format', dataRows[1].val.format('DD-MM-YYYY'));
-        console.log('data', { dataRows, dataMainTable, state, verification });
+        if (checkValues({ dataMainTable }) === false || checkInputs(data) === false) {
+            setMessage('Agregar todos los datos y/o imagenes necesarias antes de terminar etapa.');
+        } else if (checkValues({ dataMainTable }) === true && checkInputs(data) === true) {
+            let comments = [], images = [], types = [];
+            sendForm({ images, comments, types, data });
+
+            setMessage('Etapa finalizada con éxito!! :) ');
+            setTimeout(() => {
+                setRedirect('/');
+            }, 2000);
+        }
     }
 
     return (
         <div >
             <CssBaseline />
             <Container maxWidth="lg" >
+                {(redirect === '/') ? <Redirect to={redirect} /> : null}
                 <Grid container spacing={1}>
                     <Grid item xs={12}>
                         <Typography className={classes.subtitle} align="center" variant="h4">
@@ -166,6 +210,11 @@ export default function StageApproval() {
                     </Button>
                 </form>
             </Box>
+            {(message !== '') ? (
+                <Box mt={3} mb={5}>
+                    <Typography align="center" variant="subtitle1"> {message} </Typography>
+                </Box>
+            ) : null}
             <Box mt={3} mb={5}>
                 <Copyright />
             </Box>

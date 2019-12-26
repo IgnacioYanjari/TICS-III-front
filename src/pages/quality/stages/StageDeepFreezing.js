@@ -6,22 +6,27 @@ import {
     Paper, Typography, List, ListItem, ListItemText,
     ListItemIcon
 } from '@material-ui/core';
+import { Redirect } from "react-router-dom";
 import {
     Info as InfoIcon, Help as HelpIcon
 } from '@material-ui/icons';
 import loginStyle from 'styles/Login.js';
-import { QaService } from 'services';
+import { QaService, OpService } from 'services';
 import {
     ResumeTable, Copyright, StageTable,
     ImageList
 } from 'components';
 import Moment from 'react-moment';
 import shortid from 'shortid';
+import checkValues from 'utils/checkValues';
+import moment from 'moment';
 
-export default function StageDeepFreezing() {
+export default function StageDeepFreezing(props) {
 
     const classes = loginStyle();
-    // const [message, setmessage] = useState('');
+    const [message, setMessage] = useState('');
+    const [redirect, setRedirect] = useState('');
+    const opService = new OpService();
     const refMainTable = useRef();
     const [data, setData] = useState({});
     const qaService = new QaService();
@@ -108,22 +113,59 @@ export default function StageDeepFreezing() {
         const user = qaService.getProfile();
         setData({
             title: 'Ultra Congelación',
-            opId: 100,
-            client: 'Mac Donalds',
+            opId: props.data.opId,
+            client: props.data.client,
             qaUser: user.name + ' ' + user.surname
         });
-    }, [])
+    }, [props])
 
     const handleSubmit = (e) => {
         e.preventDefault();
         let dataMainTable = refMainTable.current.getData();
-        console.log('data', { merma, dataMainTable });
+        async function sendForm(data) {
+            await opService.finishStage(data, props.data.opId)
+        }
+
+        if (checkValues({ dataMainTable, merma }) === false) {
+            setMessage('Agregar todos los datos y/o imagenes necesarias antes de terminar etapa.');
+        } else {
+
+            dataMainTable.map(val => {
+                val.start_time = moment(val.start_time).format("HH:mm A");
+                val.finish_time = moment(val.finish_time).format("HH:mm A");
+                return val;
+            });
+
+            let data = [{
+                type: 'table',
+                title: 'Tabla Principal',
+                headers: mainTable.map(val => {
+                    return { title: val.title, field: val.field }
+                }),
+                data: dataMainTable
+            }], images = [], comments = [], types = [];
+
+
+            merma.list.forEach(val => {
+                types.push("MR");
+                comments.push(val.text);
+                images.push(val.image);
+            });
+
+            sendForm({ data, images, comments, types });
+
+            setMessage('Etapa finalizada con éxito!! :) ');
+            setTimeout(() => {
+                setRedirect('/');
+            }, 2000);
+        }
     }
 
     return (
         <div >
             <CssBaseline />
             <Container maxWidth="lg" >
+                {(redirect === '/') ? <Redirect to={redirect} /> : null}
                 <Grid container spacing={1}>
                     <Grid item xs={12}>
                         <ResumeTable data={data} />
@@ -149,6 +191,11 @@ export default function StageDeepFreezing() {
                     </Button>
                 </form>
             </Box>
+            {(message !== '') ? (
+                <Box mt={3} mb={5}>
+                    <Typography align="center" variant="subtitle1"> {message} </Typography>
+                </Box>
+            ) : null}
             <Box mt={3} mb={5}>
                 <Copyright />
             </Box>

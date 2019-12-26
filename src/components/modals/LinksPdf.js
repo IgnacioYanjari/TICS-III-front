@@ -9,7 +9,6 @@ import {
 } from '@material-ui/icons'
 import { Loading } from 'components';
 import { OpService } from 'services';
-import shortid from 'shortid';
 
 export default function LinksPdf(props) {
 
@@ -19,13 +18,6 @@ export default function LinksPdf(props) {
     const opService = new OpService();
 
     useEffect(() => {
-        // Llamar ruta para cargar links
-        if (!props.open) {
-            setMessage('');
-            setLinks([]);
-            return;
-        };
-        setQuery('sending');
         async function getLinks() {
             let res = await opService.getLinks(props.opId);
             console.log(res);
@@ -34,9 +26,17 @@ export default function LinksPdf(props) {
             // Si no existe
             setMessage('No se ha terminado ninguna etapa');
         }
-        getLinks();
-
-    }, [props.open]);
+        // Llamar ruta para cargar links
+        if (!props.open) {
+            setMessage('');
+            setLinks([]);
+            return;
+        };
+        if (props.opId) {
+            setQuery('sending');
+            getLinks();
+        }
+    }, [props.open, props.opId]);
 
     let closeModal = () => {
         setLinks([]);

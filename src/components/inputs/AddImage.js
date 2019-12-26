@@ -10,8 +10,11 @@ export default function AddImage(props) {
     const [image, setImage] = useState('Tomar foto');
 
     const handleImage = (e) => {
-        setImage(e.target.files[0].name);
-        props.changeImage(props.index, e.target.files[0]);
+        if (e.target.files[0]) {
+            setImage(e.target.files[0].name);
+            props.changeImage(props.index, e.target.files[0]);
+        }
+
     }
 
     return (

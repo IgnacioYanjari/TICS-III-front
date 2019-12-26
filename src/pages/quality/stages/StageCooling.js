@@ -1,22 +1,27 @@
 import React, {
     useState, useEffect, useRef
 } from 'react';
+import { Redirect } from "react-router-dom";
 import {
-    Grid, Container, CssBaseline, Box, Button
+    Grid, Container, CssBaseline, Box, Button, Typography
 } from '@material-ui/core';
 import loginStyle from 'styles/Login.js';
-import { QaService } from 'services';
+import { QaService, OpService } from 'services';
 import {
     ResumeTable, Copyright, StageTable,
     ImageList
 } from 'components';
 import Moment from 'react-moment';
 import shortid from 'shortid';
+import checkValues from 'utils/checkValues';
+import moment from 'moment';
 
-export default function StageCooling() {
+export default function StageCooling(props) {
 
     const classes = loginStyle();
-    // const [message, setmessage] = useState('');
+    const opService = new OpService();
+    const [message, setMessage] = useState('');
+    const [redirect, setRedirect] = useState('');
     const refMainTable = useRef();
     const [data, setData] = useState({});
     const qaService = new QaService();
@@ -47,8 +52,44 @@ export default function StageCooling() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        async function sendForm(data) {
+            await opService.finishStage(data, props.data.opId)
+        }
+
         let dataMainTable = refMainTable.current.getData();
-        console.log({ dataMainTable, merma });
+        if (checkValues({ dataMainTable, merma }) === false) {
+            setMessage('Agregar todos los datos y/o imagenes necesarias antes de terminar etapa.');
+        } else {
+
+            dataMainTable.map(val => {
+                val.start_time = moment(val.start_time).format("HH:mm A");
+                val.finish_time = moment(val.finish_time).format("HH:mm A");
+                return val;
+            });
+
+            let data = [{
+                type: 'table',
+                title: 'Tabla Principal',
+                headers: mainTable.map(val => {
+                    return { title: val.title, field: val.field }
+                }),
+                data: dataMainTable
+            }], images = [], comments = [], types = [];
+
+            merma.list.forEach(val => {
+                types.push("MR");
+                comments.push(val.text);
+                images.push(val.image);
+            });
+
+            sendForm({ data, images, comments, types });
+
+            setMessage('Etapa finalizada con éxito!! :) ');
+            setTimeout(() => {
+                setRedirect('/');
+            }, 2000);
+        }
     }
 
     const handleText = (pos, text, image) => {
@@ -62,17 +103,18 @@ export default function StageCooling() {
     useEffect(() => {
         const user = qaService.getProfile();
         setData({
-            title: 'Enfriamiento',
-            opId: 100,
-            client: 'Mac Donalds',
+            title: 'Congelamiento',
+            opId: props.data.opId,
+            client: props.data.client,
             qaUser: user.name + ' ' + user.surname
         });
-    }, [])
+    }, [props])
 
     return (
         <div >
             <CssBaseline />
             <Container maxWidth="lg" >
+                {(redirect === '/') ? <Redirect to={redirect} /> : null}
                 <Grid container spacing={1}>
                     {/* Lista de Activos*/}
                     <Grid item xs={12}>
@@ -93,6 +135,11 @@ export default function StageCooling() {
                     </Button>
                 </form>
             </Box>
+            {(message !== '') ? (
+                <Box mt={3} mb={5}>
+                    <Typography align="center" variant="subtitle1"> {message} </Typography>
+                </Box>
+            ) : null}
             <Box mt={3} mb={5}>
                 <Copyright />
             </Box>

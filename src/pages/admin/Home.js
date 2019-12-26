@@ -76,9 +76,10 @@ export default function LoginPage() {
         async function editOp() {
             let res = await admService.updateOrder(
                 newData.id,
-                newData.start_date,
-                newData.finish_date
+                moment(newData.start_date).format('YYYY-MM-DD'),
+                moment(newData.finish_date).format('YYYY-MM-DD')
             );
+
             if (res.status !== 'fail') {
                 let data = [...openOps.data];
                 data[data.indexOf(oldData)] = newData;

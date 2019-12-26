@@ -1,16 +1,20 @@
 import React, { useState, useEffect } from 'react';
+import { Redirect } from "react-router-dom";
 import {
-    Grid, Container, CssBaseline, Box, Button
+    Grid, Container, CssBaseline, Box, Button, Typography
 } from '@material-ui/core';
 // import loginStyle from 'styles/Login.js';
-import { QaService } from 'services';
+import { QaService, OpService } from 'services';
 import { ResumeTable, ImageList, Copyright } from 'components';
 import shortid from 'shortid';
+import checkValues from 'utils/checkValues';
 
-export default function StagePortioned() {
+export default function StagePortioned(props) {
 
     // const classes = loginStyle();
-    // const [message, setmessage] = useState('');
+    const opService = new OpService();
+    const [redirect, setRedirect] = useState('');
+    const [message, setMessage] = useState('');
     const [resume, setResume] = useState({});
     const [lote, setLote] = useState({
         title: 'Fotografía de Lote / Fecha de ingredientes',
@@ -43,12 +47,13 @@ export default function StagePortioned() {
     useEffect(() => {
         const user = qaService.getProfile();
         setResume({
-            title: 'Porcionamiento',
-            opId: 100,
-            client: 'Mac Donalds',
+            title: 'Porcionado',
+            opId: props.data.opId,
+            client: props.data.client,
             qaUser: user.name + ' ' + user.surname
         });
-    }, [])
+
+    }, [props]);
 
     const handleImage = (pos, image) => {
         let data = { ...lote }
@@ -67,13 +72,40 @@ export default function StagePortioned() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log('data', { merma, lote });
+        async function sendForm(data) {
+            await opService.finishStage(data, props.data.opId)
+        }
+
+        if (checkValues({ merma, lote }) === false) {
+            setMessage('Agregar todos los datos y/o imagenes necesarias antes de terminar etapa.');
+        } else {
+            let comments = [], images = [], types = [];
+            merma.list.forEach(val => {
+                types.push("MR");
+                comments.push(val.text);
+                images.push(val.image);
+            });
+            lote.list.forEach(val => {
+                types.push("PR");
+                comments.push(val.title);
+                images.push(val.image);
+            })
+            sendForm({
+                images, comments, types, data: []
+            });
+
+            setMessage('Etapa finalizada con éxito!! :) ');
+            setTimeout(() => {
+                setRedirect('/');
+            }, 2000);
+        }
     }
 
     return (
         <div >
             <CssBaseline />
             <Container maxWidth="lg" >
+                {(redirect === '/') ? <Redirect to={redirect} /> : null}
                 <Grid container spacing={1}>
                     <Grid item xs={12}>
                         <ResumeTable data={resume} />
@@ -92,6 +124,12 @@ export default function StagePortioned() {
                         </Button>
                     </form>
                 </Box>
+                {(message !== '') ? (
+                    <Box mt={3} mb={5}>
+                        <Typography align="center" variant="subtitle1"> {message} </Typography>
+                    </Box>
+                ) : null}
+
 
             </Container>
             <Box mt={3} mb={5}>

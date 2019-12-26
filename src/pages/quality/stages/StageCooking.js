@@ -1,6 +1,7 @@
 import React, {
     useState, useEffect, useRef
 } from 'react';
+import { Redirect } from "react-router-dom";
 import {
     Grid, Container, CssBaseline, Box, Button,
     Paper, Typography, List, ListItem, ListItemText,
@@ -10,22 +11,26 @@ import {
     Info as InfoIcon, Help as HelpIcon
 } from '@material-ui/icons';
 import loginStyle from 'styles/Login.js';
-import { QaService } from 'services';
+import { QaService, OpService } from 'services';
 import {
     ResumeTable, Copyright, StageTable,
     ImageList
 } from 'components';
 import Moment from 'react-moment';
 import shortid from 'shortid';
+import checkValues from 'utils/checkValues';
+import moment from 'moment';
 
-export default function StageCooking() {
+export default function StageCooking(props) {
 
     const classes = loginStyle();
     // Usar referencia para llamar a tablas
+    const [redirect, setRedirect] = useState('');
     const refMainTable = useRef();
     const refCaracTable = useRef();
-    const [message, setmessage] = useState('');
+    const [message, setMessage] = useState('');
     const [resume, setResume] = useState({});
+    const opService = new OpService()
     const mainTable = [
         { title: 'Producto', field: 'product' },
         { title: 'Lote', field: 'lote' },
@@ -85,17 +90,67 @@ export default function StageCooking() {
         const user = qaService.getProfile();
         setResume({
             title: 'Cocción',
-            opId: 100,
-            client: 'Mac Donalds',
+            opId: props.data.opId,
+            client: props.data.client,
             qaUser: user.name + ' ' + user.surname
         });
-    }, [])
+    }, [props])
 
     const handleSubmit = (e) => {
         e.preventDefault();
         let dataMainTable = refMainTable.current.getData();
         let dataCaracTable = refCaracTable.current.getData();
-        console.log({ dataCaracTable, dataMainTable });
+
+        async function sendForm(data) {
+            await opService.finishStage(data, props.data.opId)
+        }
+
+        if (checkValues({ dataCaracTable, dataMainTable, merma }) === false) {
+            setMessage('Agregar todos los datos y/o imagenes necesarias antes de terminar etapa.');
+        } else {
+            // Parsear fechas
+            dataMainTable.map(val => {
+                val.start_time = moment(val.start_time).format("HH:mm A");
+                val.finish_time = moment(val.finish_time).format("HH:mm A");
+                return val;
+            });
+
+            dataCaracTable.map(val => {
+                val.start_time = moment(val.start_time).format("HH:mm A");
+                val.finish_time = moment(val.finish_time).format("HH:mm A");
+                return val;
+            });
+
+            let data = [{
+                type: 'table',
+                title: 'Tabla Principal',
+                headers: mainTable.map(val => {
+                    return { title: val.title, field: val.field }
+                }),
+                data: dataMainTable
+            }, {
+                type: 'table',
+                title: 'Características organolépticas',
+                headers: caracTable.map(val => {
+                    return { title: val.title, field: val.field }
+                }),
+                data: dataCaracTable
+
+            }], images = [], comments = [], types = [];
+
+            merma.list.forEach(val => {
+                types.push("MR");
+                comments.push(val.text);
+                images.push(val.image);
+            });
+
+            sendForm({ data, images, comments, types });
+
+            setMessage('Etapa finalizada con éxito!! :) ');
+            setTimeout(() => {
+                setRedirect('/');
+            }, 2000);
+        }
     }
 
     const handleText = (pos, text, image) => {
@@ -134,6 +189,7 @@ export default function StageCooking() {
         <div >
             <CssBaseline />
             <Container maxWidth="lg" >
+                {(redirect === '/') ? <Redirect to={redirect} /> : null}
                 <Grid container spacing={1}>
                     <Grid item xs={12}>
                         <ResumeTable data={resume} />
@@ -162,6 +218,11 @@ export default function StageCooking() {
                     </Button>
                 </form>
             </Box>
+            {(message !== '') ? (
+                <Box mt={3} mb={5}>
+                    <Typography align="center" variant="subtitle1"> {message} </Typography>
+                </Box>
+            ) : null}
             <Box mt={3} mb={5}>
                 <Copyright />
             </Box>

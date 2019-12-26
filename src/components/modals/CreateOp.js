@@ -5,7 +5,7 @@ import {
     Select, MenuItem, Box, Typography
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { TextInput, Loading } from 'components';
+import { Loading } from 'components';
 import { AdmService } from 'services';
 import moment from "moment";
 import MomentUtils from "@date-io/moment";
@@ -65,6 +65,7 @@ export default function CreateOp(props) {
             }
             setMessage('Operación creada con éxito');
             props.closeModal(response);
+            setMessage('');
         }
         addOp({
             customer: client, product, quantity,
