@@ -138,28 +138,32 @@ export default function LoginPage() {
                 >
                     <AddIcon className={classes.add} /> Crear Orden de producción
                 </Fab>
-                <Grid className={classes.paper} item xs={12} md={12} xl={12} lg={12}>
-                    <Paper style={{ width: '100%' }}>
-                        <OpTable
-                            title="Ordenes En Curso"
-                            columns={openOps.columns}
-                            data={openOps.data}
-                            listOnClick={listOnClick}
-                            isLoading={loadingOpen}
-                            handleDelete={handleDelete}
-                            handleEdit={handleEdit}
-                        />
+                <Grid item lg={12}>
+                    <Paper className={classes.paper}>
+                        <div style={{ width: '100%' }}>
+                            <OpTable
+                                title="Ordenes En Curso"
+                                columns={openOps.columns}
+                                data={openOps.data}
+                                listOnClick={listOnClick}
+                                isLoading={loadingOpen}
+                                handleDelete={handleDelete}
+                                handleEdit={handleEdit}
+                            />
+                        </div>
                     </Paper>
                 </Grid>
-                <Grid className={classes.paper} item xs={12} md={12} xl={12} lg={12}>
-                    <Paper style={{ width: '100%' }}>
-                        <OpTable
-                            title="Ordenes Completas"
-                            columns={closedOps.columns}
-                            data={closedOps.data}
-                            listOnClick={listOnClick}
-                            isLoading={loadingClosed}
-                        />
+                <Grid item lg={12}>
+                    <Paper className={classes.paper}>
+                        <div style={{ width: '100%' }}>
+                            <OpTable
+                                title="Ordenes Completas"
+                                columns={closedOps.columns}
+                                data={closedOps.data}
+                                listOnClick={listOnClick}
+                                isLoading={loadingClosed}
+                            />
+                        </div>
                     </Paper>
                 </Grid>
             </Grid>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Grid, Paper } from '@material-ui/core';
+import { Grid, Paper, Container } from '@material-ui/core';
 import { Redirect } from "react-router-dom";
 import loginStyle from 'styles/Login.js';
 import { Template, OpTable, LinksPdf } from 'components';
@@ -69,21 +69,25 @@ export default function LoginPage() {
                 closeModal={() => setOpenList(false)}
             />
             {(linkOp !== '') ? <Redirect to={linkOp} /> : null}
-            <Grid container spacing={1} direction="row" justify="center" alignItems="center" >
-                {/* Lista de Activos*/}
-                <Grid className={classes.paper} item >
-                    <Paper style={{ width: '100%' }}>
-                        <OpTable
-                            title="Ordenes"
-                            columns={state.columns}
-                            data={state.data}
-                            detailOnClick={InscribeOp}
-                            listOnClick={listOnClick}
-                            isLoading={loading}
-                        />
+            <Grid container spacing={1}>
+                <Grid item lg={12}>
+                    {/* Lista de Activos*/}
+                    <Paper className={classes.paper} >
+                        <div style={{ width: '100%' }}>
+                            <OpTable
+
+                                title="Ordenes"
+                                columns={state.columns}
+                                data={state.data}
+                                detailOnClick={InscribeOp}
+                                listOnClick={listOnClick}
+                                isLoading={loading}
+                            />
+                        </div>
                     </Paper>
                 </Grid>
             </Grid>
-        </Template>
+
+        </Template >
     );
 }
